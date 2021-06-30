@@ -9,7 +9,7 @@ output:
       bootswatch: flatly
    source_code: embed
    navbar:
-      - { icon: "fa-arrow-left", href: "https://google.com", align: right }
+      - { icon: "fa-arrow-left", href: "https://k-maciejewski.github.io/YS_mapping/", align: right }
 ---
 
 ```{js}
