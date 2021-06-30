@@ -1,0 +1,238 @@
+---
+title: "Map Dashboard"
+output: 
+ flexdashboard::flex_dashboard:
+   orientation: rows
+   vertical_layout: fill
+   theme: 
+      version: 3
+      bootswatch: flatly
+   source_code: embed
+   navbar:
+      - { icon: "fa-arrow-left", href: "https://google.com", align: right }
+runtime: shiny
+---
+
+```{js}
+$('.navbar-inverse').removeClass('navbar-inverse').addClass('navbar-default');
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = T, echo = F, message = F, cache = F)
+library(flexdashboard)
+library(tidyverse)
+library(plotly)
+library(knitr)
+library(maps)
+library(usmap)
+library(shiny)
+library(lubridate)
+library(scales)
+
+theme_set(theme_bw())
+```
+
+```{r data, eval = T}
+data(unemp)
+unemp$colorBuckets <- as.numeric(cut(unemp$unemp, c(0, 2, 4, 6, 8, 10, 100)))
+data(statepop)
+data(citypop) # has latitude and longitude
+```
+
+# Unemployment Maps {data-orientation="rows"}
+
+## State unemployment {.sidebar}
+
+Now, we will add a sidebar and add interactivity
+
+Notice I added `runtime: shiny` to the YAML and `library(shiny)`. These will allow us to make the plots update and interact with the widgets.
+
+We will need to "tell" the plots to use the widgets as the data input.
+
+```{r}
+# Select which state to view:
+
+h3("Select which state to view")
+
+# create a dataset of all states
+# will later be passed as argument to plot_usmap(include = "state"...
+
+states <- force(state.abb)
+
+# create a dropdown to select which state to view
+selectInput("statechoice", # name of the widget, will be used later as input
+            label = ("Select State to View"), # label the widget
+           choices = states, # use the states dataset as choices in dropdown
+           selected = "CA") # default selected is CA (something must be slected)
+```
+
+Additional widgets [here](https://shiny.rstudio.com/gallery/widget-gallery.html)
+
+
+## Row 1
+
+### US unemployment
+
+```{r, all_US}
+p <- plot_usmap(data = unemp, 
+           values = "unemp",
+           size = .05,
+           theme = theme_minimal()) +
+      theme(axis.title = element_blank(),
+         axis.ticks = element_blank(),
+         axis.text = element_blank()) +
+   labs(fill = "Unemployment") +
+   viridis::scale_fill_viridis()
+
+ggplotly(p)
+```
+
+### Unemployment for selected state
+
+```{r, CA_only}
+renderPlot({ # render the interactive plot - if you don't wrap in a render statement, the widgets won't change anything
+plot_usmap(include = input$statechoice, # show only selected state using the input from widget 
+           data = unemp, 
+           values = "unemp", 
+           theme = theme_minimal()) +
+      theme(axis.title = element_blank(),
+         axis.ticks = element_blank(),
+         axis.text = element_blank()) +
+   labs(fill = "Unemployment") +
+   viridis::scale_fill_viridis()
+})
+```
+
+# Example map of information over time {data-orientation="columns"}
+
+```{r}
+set.seed(42)
+SiteName = c("A","B","C","D","E")
+date = rep(c("1/1/2018","2/1/2018","3/1/2018","4/1/2018","5/1/2018",
+             "6/1/2018","7/1/2018","8/1/2018","9/1/2018","10/1/2018","11/1/2018","12/1/2018"),
+           each = 5) %>% as.tibble
+dates<-as.POSIXct(date$value,format = "%m/%d/%Y") %>% as.tibble # change character to date format
+maternal = as.data.frame(cbind(SiteName, dates)) # make maternal
+maternal$SiteName <- as.character(maternal$SiteName) # change data type
+maternal<-rename(maternal, Period = value)
+maternal$PreM1Data_DEN = rep(floor(runif(12,100,500)), 5)
+maternal$PreM1Data_NUM = floor(maternal$PreM1Data_DEN*(runif(60,.45,.65)))
+maternal$PreM2Data_DEN = maternal$PreM1Data_NUM
+maternal$PreM2Data_NUM = ceiling(maternal$PreM2Data_DEN *(runif(60,.05,.15)))
+maternal$PreM3Data_NUM = ceiling(maternal$PreM2Data_NUM *(runif(60,.9,1)))
+maternal$PreM3Data_DEN = maternal$PreM2Data_NUM
+maternal$PostM1Data_DEN = rep(floor(runif(12,50,400)), 5)
+maternal$PostM1Data_NUM = floor(maternal$PostM1Data_DEN*(runif(60,.45,.65)))
+maternal$PostM2Data_NUM = ceiling(maternal$PostM1Data_NUM*(runif(60,.05,.15)))
+maternal$PostM2Data_DEN = maternal$PostM1Data_NUM
+maternal$PostM3Data_NUM = ceiling(maternal$PostM2Data_NUM*(runif(60,.9,1)))
+maternal$PostM3Data_DEN = maternal$PostM2Data_NUM
+###
+agg_maternal <- maternal %>% select(-c(SiteName)) %>%  #select(-c(SiteName, HospitalName, New)) 
+                                       group_by(Period) %>% summarise_all(sum, na.rm = T) # don't sum with NA's  
+attach(agg_maternal)
+agg_maternal$PrePostNums <- PreM1Data_NUM + PostM1Data_NUM 
+agg_maternal$PrenatalPctScreened <- PreM1Data_NUM/PreM1Data_DEN 
+agg_maternal$PrenatalPctPos <- PreM2Data_NUM/PreM2Data_DEN 
+agg_maternal$PrenatalPctConnected <- PreM3Data_NUM/PreM3Data_DEN 
+agg_maternal$PostPctScreened <- PostM1Data_NUM/PostM1Data_DEN 
+agg_maternal$PostPctPos <- PostM2Data_NUM/PostM2Data_DEN 
+agg_maternal$PostPctConnected <- PostM3Data_NUM/PostM3Data_DEN 
+attach(maternal)
+maternal$PrePostNums <- PreM1Data_NUM + PostM1Data_NUM 
+maternal$PrenatalPctScreened <- PreM1Data_NUM/PreM1Data_DEN 
+maternal$PrenatalPctPos <- PreM2Data_NUM/PreM2Data_DEN 
+maternal$PrenatalPctConnected <- PreM3Data_NUM/PreM3Data_DEN 
+maternal$PostPctScreened <- PostM1Data_NUM/PostM1Data_DEN 
+maternal$PostPctPos <- PostM2Data_NUM/PostM2Data_DEN 
+maternal$PostPctConnected <- PostM3Data_NUM/PostM3Data_DEN
+```
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r widget1}
+h3("Screening by site")
+hr()
+min_date <-as.Date(min(Period)) # create min and max for slider
+max_date <- as.Date(max(Period))
+sliderInput("Date_range_selector0", "Date Range: ", min = min_date, max =max_date, value=as.Date(c("2018-01-01","2018-12-01")),timeFormat="%b %Y") # date slider
+# each has a different title "Date_range_selectorN" ... be sure to change
+# select each SiteName with drop down menus
+hr()
+agg_select <- agg_maternal %>%  select(Period, PrenatalPctPos) %>% mutate(SiteName = "average") # option to show average line
+maternal_avg <- full_join(agg_select, maternal)
+which_SiteName <- maternal_avg %>% distinct(SiteName) %>% pull %>% as.character() %>% sort()
+selectInput("SiteName_choice1", label = ("Select Site 1"),
+           choices = which_SiteName, selected = NULL)
+selectInput("SiteName_choice2", label = ("Select Site 2"),
+           choices = which_SiteName, selected = NULL)
+```
+
+## About
+
+### About
+
+Below is an example of making interactive charts, over time. Some of the functions I used for dates may come in handy, if you choose to make maps or plots that can change over time.
+
+For example:
+
+In my slider, I set the min and max dates as the range of values in the dataset. The values needed to be selected with `as.Date` so they could be viewed and treated properly when selected by the data. The data was aggregated over month, so I wanted it to appear as "Month Year". I did this using `timeFormat="%b %Y"`
+
+`sliderInput("Date_range_selector0", "Date Range: ", min = min_date, max =max_date, value=as.Date(c("2018-01-01","2018-12-01")), timeFormat="%b %Y")`
+
+In my labels, I needed the dates to appear correctly, and not as text or numeric. I achieved this using `as.POSIXct` which is a function for transforming and dealing with dates and times. I also only labeled the values by "Month Year".
+
+`x = as.POSIXct('2018-02-01'),`
+
+`labels = date_format("%b %Y")`
+
+Row 1
+-----------------------------------------------------------------------
+
+### plot 1
+```{r, eval = T}
+renderPlotly({                                                        # render the interactive plot
+ # create a ggplot and make interactive by calling ggplotly
+p<- maternal_avg %>% filter(SiteName %in% input$SiteName_choice1& 
+                              between(as.Date(Period),
+                                      input$Date_range_selector0[1], 
+                                      input$Date_range_selector0[2])) %>% # filters only the SiteName the user chose
+  #filter(Period %in% input$daterange) %>% 
+  ggplot(aes(x=Period, y=PrenatalPctPos, group= 1,                   # group = 1 to plot since each month has 1 data point
+              text = paste('SiteName: ', SiteName, "",            # create tooltip text
+                           'proportion positive: ', round(PrenatalPctPos,3)))) +
+     geom_line(aes(x=Period, y=PrenatalPctPos),color = "red") +       # each panel has its own color
+     geom_point() +                                                   # show the points
+     geom_hline(yintercept=0.12, linetype="dashed", color = "black") + # horizontal reference line
+     annotate(geom="text", label="12% PRAMS", x = as.POSIXct('2018-02-01'), y=.125, vjust=-1) + # annotate the line
+     xlab("Month") + # x and y labels
+     ylab("Proportion")  +
+  scale_x_datetime(date_breaks = "1 month", labels = date_format("%b %Y")) + # format x axis
+  theme(axis.text.x  = element_text(angle=45, vjust=0.5)) # x labels at 45 deg angle
+ggplotly(p, tooltip = ("text"))
+ })
+```
+
+### plot 2
+
+```{r}
+renderPlotly({
+p2<-maternal_avg %>% filter(SiteName %in% input$SiteName_choice2& 
+                              between(as.Date(Period),
+                                      input$Date_range_selector0[1], 
+                                      input$Date_range_selector0[2])) %>%
+ ggplot(aes(x=Period, y=PrenatalPctPos, group= 1, 
+              text = paste('SiteName: ', SiteName, "",
+                           'proportion positive: ', round(PrenatalPctPos,3)))) +
+     geom_line(aes(x=Period, y=PrenatalPctPos),color = "blue") +
+     geom_point() +
+     geom_hline(yintercept=0.12, linetype="dashed", color = "black") + 
+     xlab("Month")+
+     ylab("Proportion")  +
+  scale_x_datetime(date_breaks = "1 month", labels = date_format("%b %Y")) + 
+  theme(axis.text.x  = element_text(angle=45, vjust=0.5))
+ggplotly(p2, tooltip = c("text"))
+ })
+```
+

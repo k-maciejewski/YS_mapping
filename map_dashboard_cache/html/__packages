@@ -1,0 +1,16 @@
+base
+flexdashboard
+tidyverse
+ggplot2
+tibble
+tidyr
+readr
+purrr
+dplyr
+stringr
+forcats
+plotly
+knitr
+maps
+usmap
+shiny

@@ -1,0 +1,14 @@
+name: "Young Scholars"
+navbar:
+  title: "Young Scholars Mapping"
+  left:
+    - text: "About"
+      href: index.html
+    - text: "1- Plotting Maps"
+      href: plotting_maps.html
+    - text: "2- Creating dashboards"
+      href: dashboard_101.html
+    - text: "3- Adding maps to your dashboard"
+      href: map_dashboard.html
+    - text: "4- Interactive dashboard"
+      href: map_dashboard_interactive.html

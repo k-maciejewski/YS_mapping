@@ -1,0 +1,203 @@
+---
+title: "Plotting Maps"
+author: "Young Scholars Program"
+output:
+  html_document:
+    df_print: paged
+    theme: flatly
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(eval = T, echo = T, message = F, warning = F, cache=TRUE)
+
+library(maps)
+library(usmap)
+library(ggplot2)
+library(tidyverse)
+library(plotly)
+```
+
+We'll learn some methods to plot data onto maps of the US, how to make them interactive, and eventually how to create dashboards for the maps.
+
+I'll be showing you some features of the `usmap` package, but there are other packages or methods to mapping. So, feel free to use anything if you find something helpful online.
+
+Now, points are defined by latitude and longitude, and can be transformed into other projections. There are also shapefiles which can help define the geometry or outlines of states.
+
+The `usmap` package has some convenient methods to plot or transform within the US, and can also return a `ggplot2` object, so other layers such as themes, labels, or even other data, can be added using ggplot functions you are already familiar with.
+
+## usmap::plot_usmap()
+
+    ## Conveniently plot basic US map
+
+    ### Description
+
+    Conveniently plot basic US map
+
+    ### Usage
+
+    plot_usmap(
+      regions = c("states", "state", "counties", "county"),
+      include = c(),
+      exclude = c(),
+      data = data.frame(),
+      values = "values",
+      theme = theme_map(),
+      labels = FALSE,
+      label_color = "black",
+      ...
+    )
+
+
+First we load in data using datasets included in the `usmaps` package
+
+```{r, plots}
+# load data
+  # unemp includes data for some counties not on the "lower 48 states" county
+  # map, such as those in Alaska, Hawaii, Puerto Rico, and some tiny Virginia
+  #  cities
+  data(unemp)
+# create cutoffs which will be used to create color bins
+  unemp$colorBuckets <- as.numeric(cut(unemp$unemp, c(0, 2, 4, 6, 8, 10, 100)))
+  data(statepop)
+
+plot_usmap() # simple plot of the US
+```
+
+Using the built-in `plot_usmap`, we can specify what regions to map, for example, show all counties. I add title, subtitle, and color the background using `ggplot2` functions.
+
+```{r}
+plot_usmap(regions = "counties") + # specify what to map
+  labs(title = "US Counties", # add some ggplot stuffs
+       subtitle = "This is a blank map of the counties of the United States.") + 
+  theme(panel.background = element_rect(color = "black", fill = "lightblue"))
+```
+
+Next, we can specify what data to map. Of course, the dataset needs to include a column with information that can be mapped. In this case `unemp$fips` holds the information that `plot_usmap` uses. From [wikipedia:](https://en.wikipedia.org/wiki/FIPS_county_code) The Federal Information Processing Standard Publication 6-4 (FIPS 6-4) is a five-digit Federal Information Processing Standards code which uniquely identified counties and county equivalents in the United States, certain U.S. possessions, and certain freely associated states.
+
+```{r}
+plot_usmap(data = unemp, # specify dataset to use (uses region info from dataset)
+           values = "colorBuckets", # name of column to fill map (as string)
+           theme = theme_dark()) # change theme
+```
+
+Using the `include` variable, we can instruct the function to only plot California
+
+```{r}
+plot_usmap(include = "CA", # show only CA
+           data = unemp, 
+           values = "colorBuckets", 
+           theme = theme_dark()) 
+```
+
+Next, we explore the `statepop` dataset, and use the `scale_fill_continuous` function from `ggplot2` to define the colors. We can use `ggplotly` to add some basic interactivity. When you hover, the tool tip shows up.
+
+```{r}
+plot_usmap(data = statepop, 
+           values = "pop_2015") +
+  scale_fill_continuous(low = "white", high = "red", # define high and low colors
+                        name = "Population (2015)", # name of legend
+                        label = scales::comma) + # use commas in scale
+  theme(legend.position = "right") # add on ggplot theme components
+
+# we can wrap any of these in ggplotly to make them interactive
+ggplotly(plot_usmap(data = statepop, 
+           values = "pop_2015") +
+  scale_fill_continuous(low = "white", high = "red", 
+                        name = "Population (2015)", 
+                        label = scales::comma) + 
+  theme(legend.position = "right")) 
+
+# or, save the plot and apply ggplotly
+p <- plot_usmap(data = statepop, 
+           values = "pop_2015") +
+  scale_fill_continuous(low = "white", high = "red", 
+                        name = "Population (2015)", 
+                        label = scales::comma) + 
+  theme(legend.position = "right")
+ggplotly(p)
+```
+
+## Latitude and Longitude
+
+Now, if I had data with latitude and longitude, I could also create a map, and can even do so using simple `ggplot2`. Below I use the `citypop` dataset to plot the most populous cities in the US in 2010. The color signifies population size; lighter blue is more populous.
+
+```{r}
+ggplot(data = citypop, 
+           aes(y = lat, x = lon, color = city_pop)) +
+   geom_point()
+```
+
+Notice that this only maps the points, it does not have the outlines of the states. This isn't too helpful for a map. So, we want to add in the shape files!
+
+Well, in order to do that, I need to transform the data projection to match up with the projection used by `usmap`:
+
+
+```{r}
+citypop_map <- usmap_transform(citypop) # this function allows you to change the projection
+```
+
+Now, I can put the points from Most Populous City on a blank US Map:
+
+```{r}
+plot_usmap() +
+  geom_point(data = citypop_map, 
+           aes(y = lat.1, x = lon.1, color = city_pop))
+```
+
+Notice the way the code was written above. One way to think of the logic of the layers, is that we are adding the points to an existing map. If we tried to just add our ggplot object with points to another ggplot object with the chloropleths (shape outlines), R would give us an error. We cannot add two ggplot objects! Instead, we just add the points as a new layer, by defining the data and aethetics in the call to `geom_point`
+
+```{r, eval = F}
+plot_usmap() + ggplot(data = citypop, 
+           aes(y = lat, x = lon, color = city_pop)) +
+  geom_point()
+```
+
+Now, we can even "add" our colored population map from earlier to the points. This is just for illustrative purposes, though. The data are from different sources and different years, so this wouldn't be done otherwise.
+
+### US Population 2015
+
+```{r}
+p <- plot_usmap(data = statepop, 
+           values = "pop_2015") +
+  scale_fill_continuous(low = "white", high = "red", 
+                        name = "Population (2015)", 
+                        label = scales::comma) + 
+  theme(legend.position = "right")
+
+p
+```
+
+### Add layer
+
+```{r}
+# this is another way to add layers and plots together
+# add plot layers to previous object "p"
+p2 <- p + geom_point(data = citypop_map, 
+           aes(y = lat.1, x = lon.1, 
+               color = city_pop, 
+               size = city_pop, # the dot size will be proportional to population
+               text = paste("Population:", city_pop, "\n", most_populous_city, abbr))) + # define hover text; "/n" gives a line break
+  theme(legend.position = "right") +
+   scale_color_continuous(low = "lightblue", high = "darkblue", 
+                        name = "Most populous city (2010)", 
+                        label = scales::comma) +
+  labs(title = "Most populous city in each state in 2010 \n and state populations in 2015 \n Source: US Census")
+
+# you can ignore the warning message: Ignoring unknown aesthetics: text 
+# it seems like this is a bug
+# using text inside the aes lets you define what will show in the hover tooltip with plotly. as you can see, it does appear correctly in the plot!
+
+ggplotly(p2, tooltip = "text") # defining tooltip to be "text" will show ONLY what is in aes(text = ...); Otherwise shows all variables (and default names) in aes()
+```
+
+# Additional Resources:
+
+[ggplot](https://ggplot2.tidyverse.org/index.html)
+
+[USMap: Mapping Tutorial](https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html)
+
+[USMap: Advanced Mapping Tutorial](https://cran.r-project.org/web/packages/usmap/vignettes/advanced-mapping.html)
+
+[Mapping Chapter; Data Visualization: A practical introduction, by Kieran Healy](https://socviz.co/maps.html)
+
+[Maps Chapter; Interactive web-based data visualization with R, plotly, and shiny](https://plotly-r.com/maps.html)

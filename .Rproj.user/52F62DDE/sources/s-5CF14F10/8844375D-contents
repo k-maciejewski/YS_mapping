@@ -1,0 +1,147 @@
+---
+title: "Intern projects"
+author: "Young Scholars Program"
+output:
+  html_document:
+    df_print: paged
+    theme: flatly
+---
+
+# Flexdashboards
+
+We can create dashboards using the `flexdashboard` package by specifying flex_dashboard as the output format in the R Markdown YAML. There are many possible outputs you can create. For now, below is the default dashboard template in R Studio – if you install flexdashboard, you can use `File > New File > R Markdown > From Template` to create a new `.Rmd` file with the structure below.
+
+This is an example outline of a dashboard:
+
+It has a sidebar, and two columns with spaces for plots. Just as in any RMarkdown document, you can input text and code and it will be rendered. In this case, it is rendered into a dashboard with the information in the pre-specified spaces.
+
+
+    
+    ---
+    title: "Flex Dashboard"
+    output: 
+      flexdashboard::flex_dashboard:
+        orientation: columns
+        vertical_layout: fill
+    ---
+
+    ```{r setup, include=FALSE}
+    library(flexdashboard)
+    ```
+
+    Column {.sidebar}
+    -----------------------------------------------------------------------
+
+    ```{r}
+
+    ```
+
+    Column {data-width=650}
+    -----------------------------------------------------------------------
+
+    ### Chart A
+
+    ```{r}
+
+    ```
+
+    Column {data-width=350}
+    -----------------------------------------------------------------------
+
+    ### Chart B
+
+    ```{r}
+
+    ```
+
+    ### Chart C
+
+    ```{r}
+
+    ```
+
+
+# [Layout info](https://pkgs.rstudio.com/flexdashboard/articles/layouts.html)
+
+You can have a single page, additional tabs, and multiple pages
+
+In the YAML you will enter `vertical_layout: fill` or `vertical_layout: scroll`, which controls how plots will fill the screen. They will either zoom to fill, or maintain dimensions and allow scrolling. Play around to decide which is right for you
+
+You can have row or column alignment, controlled by `{data-orientation=columns}` or `{data-orientation=rows}`
+
+Tabs are entered in a row or column with `{.tabset}` or `{.tabset .tabset-fade}`
+
+When creating multiple pages, use the following to designate breaks:
+
+    Page 1
+    =====================================  
+        
+    Column 
+    -------------------------------------
+        
+    ### Chart 1
+    ```{r}
+    
+    ```
+    
+    Page 2 {data-orientation=rows}
+    =====================================     
+       
+    Row {data-height=600}
+    -------------------------------------
+    
+    ### Chart 1
+    
+    ```{r}
+    
+    ```
+    
+    
+    ### title makes the caption
+  
+    #### will make headers
+
+There are more info and examples [here](https://pkgs.rstudio.com/flexdashboard/articles/layouts.html) or you can look [here](https://pkgs.rstudio.com/flexdashboard/articles/examples.html) for examples and try to understand their codes
+
+### Additional Resources
+
+#### flexdashboard
+
+-   flex dashboards can be static or made interactive by using `runtime: shiny`
+
+[flex dashboard guide](https://rmarkdown.rstudio.com/flexdashboard/index.html)
+
+[layout guide](hhttps://pkgs.rstudio.com/flexdashboard/articles/layouts.html)
+
+[dashboard chapter in markdown book](https://bookdown.org/yihui/rmarkdown/dashboards.html)
+
+#### ggplot
+
+[reference](https://ggplot2.tidyverse.org/reference/)
+
+[tutorial from r-statistics](http://r-statistics.co/R-Tutorial.html)
+
+#### plot.ly
+
+-   `plot.ly` creates interactive plots
+
+-   you can also wrap `ggplot` objects in `ggplotly` to make them interactive
+
+[plot.ly guide](https://plot.ly/r)
+
+[cheatsheet](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf?_ga=2.221695057.832877277.1554941189-624079522.1510715632)
+
+[ggplotly](https://plotly.com/ggplot2/getting-started/)
+
+#### shiny app
+
+-   you can also make a shiny app, which uses more html - like syntax
+
+[shiny guide: getting started](https://rstudio.github.io/shinydashboard/get_started.html)
+
+[shiny guide: structure](https://rstudio.github.io/shinydashboard/structure.html#background-shiny-and-html)
+
+[shiny tutorial from RStudio](http://shiny.rstudio.com/tutorial)
+
+[another resource](https://docs.rstudio.com/shinyapps.io/)
+
