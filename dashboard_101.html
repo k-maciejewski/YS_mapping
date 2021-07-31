@@ -247,17 +247,26 @@ $(document).ready(function () {
         <li>
   <a href="index.html">About</a>
 </li>
-<li>
-  <a href="plotting_maps.html">1- Plotting Maps</a>
-</li>
-<li>
-  <a href="dashboard_101.html">2- Creating dashboards</a>
-</li>
-<li>
-  <a href="map_dashboard.html">3- Adding maps to your dashboard</a>
-</li>
-<li>
-  <a href="https://kmaciejewski.shinyapps.io/map_dashboard_interactive/">4- Interactive dashboard</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    tutorial materials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="plotting_maps.html">1- Plotting Maps</a>
+    </li>
+    <li>
+      <a href="dashboard_101.html">2- Creating dashboards</a>
+    </li>
+    <li>
+      <a href="map_dashboard.html">3- Adding maps to your dashboard</a>
+    </li>
+    <li>
+      <a href="https://kmaciejewski.shinyapps.io/map_dashboard_interactive/">4- Interactive dashboard</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -373,7 +382,13 @@ Row {data-height=600}
 <div id="shiny-app" class="section level4">
 <h4>shiny app</h4>
 <ul>
-<li>you can also make a shiny app, which uses more html - like syntax</li>
+<li><p>you can make a shiny dashboard or app, which allows for more flexibility and interactivity</p></li>
+<li><p>you can run the app locally on your computer</p></li>
+<li><p>you can host your shiny dashboard or shiny app online</p>
+<ul>
+<li><p>R needs to be running in the background</p></li>
+<li><p>host for free at <a href="https://www.shinyapps.io/">shiny.io</a></p></li>
+</ul></li>
 </ul>
 <p><a href="https://rstudio.github.io/shinydashboard/get_started.html">shiny guide: getting started</a></p>
 <p><a href="https://rstudio.github.io/shinydashboard/structure.html#background-shiny-and-html">shiny guide: structure</a></p>
