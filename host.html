@@ -30,11 +30,12 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
-<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -221,6 +222,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -228,6 +292,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -294,8 +368,8 @@ $(document).ready(function () {
 <p>RMarkdown allows you to create simple websites. These pages are all created with .Rmd and .html files. You can also add simple themes.</p>
 <p>Create a new project and choose a website. The default template creates the <code>_site.yml</code>, index, about, and projects files.</p>
 <center>
-<p><img src="NewProj.png" /></p>
-<p><img src="NewWebsite.png" /></p>
+<p><img src="images/NewProj.png" /></p>
+<p><img src="images/NewWebsite.png" /></p>
 </center>
 <p><code>_site.yml</code>: holds simple structure for navigating your website</p>
 <p>For example the yml for this site is below. The text string is what shows in the navbar and the href is the document name or web address to navigate</p>
@@ -328,7 +402,9 @@ output:
     theme: flatly
 ---</code></pre>
 <p>You can knit your files as usual to render, preview the page or site, and <code>Build</code> the site to put it all together. Note that knitting the page only applies to that individual page. You should remember to hit <code>Build</code> to ensure all changes are applied to the whole site.</p>
-<p><img src="Build.png" /></p>
+<center>
+<img src="images/Build.png" />
+</center>
 <p>The RMarkdown Definitive Guide chapter on site generation has more <a href="https://bookdown.org/yihui/rmarkdown/rmarkdown-site.html">details</a> about additional options like footers, adding icons to the navbar, and more.</p>
 </div>
 <div id="github" class="section level1">
@@ -345,9 +421,9 @@ output:
 <li><p>If you have a project already created locally, add an existing repository, name it, and make it a GitHub repository. Then make sure to publish, and it should appear on your GitHub. If you later make changes, you will have to “push” from local to remote.</p></li>
 </ul>
 <center>
-<p><img src="githubdesktop_1.png" /></p>
-<p><img src="githubdesktop_2.png" /></p>
-<img src="githubdesktop_3.png" />
+<p><img src="images/githubdesktop_1.png" /></p>
+<p><img src="images/githubdesktop_2.png" /></p>
+<img src="images/githubdesktop_3.png" />
 </center>
 <p>The repository may automatically be created as “GitHub pages” which creates a website, but if not, check repository settings and scroll down to GitHub pages at the bottom. You may need to enable pages, or troubleshoot.</p>
 <p>If you name the repository <code>username.github.io</code> then your website will be at: <code>https://username.github.io</code>. Otherwise it will be at: <code>https://username.github.io/repo_name</code></p>
@@ -356,6 +432,15 @@ output:
 </div>
 <div id="hosting-on-shiny" class="section level1">
 <h1>Hosting on Shiny</h1>
+<ul>
+<li><p>you can make a shiny dashboard or app, which allows for more flexibility and interactivity</p></li>
+<li><p>you can run the app locally on your computer</p></li>
+<li><p>you can host your shiny dashboard or shiny app online</p>
+<ul>
+<li><p>R needs to be running in the background</p></li>
+<li><p>host for free at <a href="https://www.shinyapps.io/">shiny.io</a></p></li>
+</ul></li>
+</ul>
 <p>If you make an interactive dashboard or app with widgets that you want to host online, you need to be running R in the background. One option is hosting on shinyapps.io.</p>
 <p>You can sign up for a free account, using email, or GitHub if you have one.</p>
 <p>To connect your RStudio, you need to configure the <code>rsconnect</code> package to use that account. Retrieve your token from the shinyapps.io dashboard by selecting the Tokens option in the menu at the top right of the shinyapps dashboard (under your avatar).</p>
@@ -364,12 +449,23 @@ output:
 <p>Once you have configured your rsconnect installation, you can use it to upload applications to shinyapps.io.</p>
 <p>Click the “publish” icon, select your file and shinyapp account.</p>
 <p>(below is how it looks to update an app)</p>
-<p><img src="shiny.png" /></p>
+<center>
+<img src="images/shiny.png" />
+</center>
 <p>more info about Shiny deployment <a href="https://docs.rstudio.com/shinyapps.io/getting-started.html#deploying-applications">here</a></p>
+<p><a href="https://rstudio.github.io/shinydashboard/get_started.html">shiny guide: getting started</a></p>
+<p><a href="https://rstudio.github.io/shinydashboard/structure.html#background-shiny-and-html">shiny guide: structure</a></p>
+<p><a href="http://shiny.rstudio.com/tutorial">shiny tutorial from RStudio</a></p>
+<p><a href="https://docs.rstudio.com/shinyapps.io/">another resource</a></p>
 </div>
 
+<footer>
+<div> <p style="text-align: center;"> &copy; 2021 <a href="https://github.com/k-maciejewski/"> Kaitlin Maciejewski </a> </p> </div> 
+</footer>
 
 
+</div>
+</div>
 
 </div>
 
@@ -402,6 +498,35 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
