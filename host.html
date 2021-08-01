@@ -288,116 +288,84 @@ $(document).ready(function () {
 </div>
 
 
-<div id="flexdashboards" class="section level1">
-<h1>Flexdashboards</h1>
-<p>We can create dashboards using the <code>flexdashboard</code> package by specifying flex_dashboard as the output format in the R Markdown YAML. There are many possible outputs you can create. For now, below is the default dashboard template in R Studio – if you install flexdashboard, you can use <code>File &gt; New File &gt; R Markdown &gt; From Template</code> to create a new <code>.Rmd</code> file with the structure below.</p>
-<p>This is an example outline of a dashboard:</p>
-<p>It has a sidebar, and two columns with spaces for plots. Just as in any RMarkdown document, you can input text and code and it will be rendered. In this case, it is rendered into a dashboard with the information in the pre-specified spaces.</p>
+<div id="personal-website" class="section level1">
+<h1>Personal website</h1>
+<p>In addition to creating your project plots or dashboards on your local computer, you can also host online.</p>
+<p>RMarkdown allows you to create simple websites. These pages are all created with .Rmd and .html files. You can also add simple themes.</p>
+<p>Create a new project and choose a website. The default template creates the <code>_site.yml</code>, index, about, and projects files.</p>
+<center>
+<p><img src="NewProj.png" /></p>
+<p><img src="NewWebsite.png" /></p>
+</center>
+<p><code>_site.yml</code>: holds simple structure for navigating your website</p>
+<p>For example the yml for this site is below. The text string is what shows in the navbar and the href is the document name or web address to navigate</p>
+<pre><code>name: &quot;Young Scholars&quot;
+navbar:
+  title: &quot;Young Scholars Mapping&quot;
+  left:
+    - text: &quot;About&quot;
+      href: index.html
+  right:
+    - text: &quot;tutorial materials&quot;
+      menu:
+      - text: &quot;1- Plotting Maps&quot;
+        href: plotting_maps.html
+      - text: &quot;2- Creating dashboards&quot;
+        href: dashboard_101.html
+      - text: &quot;3- Adding maps to your dashboard&quot;
+        href: map_dashboard.html
+      - text: &quot;4- Interactive dashboard&quot;
+        href: https://kmaciejewski.shinyapps.io/map_dashboard_interactive/
+      - text: &quot;Optional: host your project online&quot;
+        href: host.html</code></pre>
+<p><code>index.Rmd</code>: holds the text and any information or code for the “landing page” of your site</p>
+<p>You can also use the “about” and “projects” pages, or delete them if not used. You can also create multiple pages, with other names. These can be created from .Rmd files, and should have html output.</p>
+<p>In the Rmd YAML, add a title and theme to each page. You can browse themes <a href="https://bootswatch.com">here</a></p>
 <pre><code>---
-title: &quot;Flex Dashboard&quot;
-output: 
-  flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
----
-
-
-
-Column {.sidebar}
------------------------------------------------------------------------
-
-
-
-Column {data-width=650}
------------------------------------------------------------------------
-
-### Chart A
-
-
-
-Column {data-width=350}
------------------------------------------------------------------------
-
-### Chart B
-
-
-
-### Chart C</code></pre>
+title: &quot;title&quot;
+output:
+  html_document:
+    theme: flatly
+---</code></pre>
+<p>You can knit your files as usual to render, preview the page or site, and <code>Build</code> the site to put it all together. Note that knitting the page only applies to that individual page. You should remember to hit <code>Build</code> to ensure all changes are applied to the whole site.</p>
+<p><img src="Build.png" /></p>
+<p>The RMarkdown Definitive Guide chapter on site generation has more <a href="https://bookdown.org/yihui/rmarkdown/rmarkdown-site.html">details</a> about additional options like footers, adding icons to the navbar, and more.</p>
 </div>
-<div id="layout-info" class="section level1">
-<h1><a href="https://pkgs.rstudio.com/flexdashboard/articles/layouts.html">Layout info</a></h1>
-<p>You can have a single page, additional tabs, and multiple pages</p>
-<p>In the YAML you will enter <code>vertical_layout: fill</code> or <code>vertical_layout: scroll</code>, which controls how plots will fill the screen. They will either zoom to fill, or maintain dimensions and allow scrolling. Play around to decide which is right for you</p>
-<p>You can have row or column alignment, controlled by <code>{data-orientation=columns}</code> or <code>{data-orientation=rows}</code></p>
-<p>Tabs are entered in a row or column with <code>{.tabset}</code> or <code>{.tabset .tabset-fade}</code></p>
-<p>When creating multiple pages, use the following to designate breaks:</p>
-<pre><code>Page 1
-=====================================  
-    
-Column 
--------------------------------------
-    
-### Chart 1
-
-
-Page 2 {data-orientation=rows}
-=====================================     
-   
-Row {data-height=600}
--------------------------------------
-
-### Chart 1
-
-
-
-
-### title makes the caption
-
-#### will make headers</code></pre>
-<p>There are more info and examples <a href="https://pkgs.rstudio.com/flexdashboard/articles/layouts.html">here</a> or you can look <a href="https://pkgs.rstudio.com/flexdashboard/articles/examples.html">here</a> for examples and try to understand their codes</p>
-<div id="additional-resources" class="section level3">
-<h3>Additional Resources</h3>
-<div id="flexdashboard" class="section level4">
-<h4>flexdashboard</h4>
+<div id="github" class="section level1">
+<h1>Github</h1>
+<p>GitHub is a site used to host and share code. Git can also be used for version control of projects. You may use some of these features if you collaborate on code projects in the future. You can also build a code portfolio on GitHub. It also has nice integration with the RMarkdown website and allows free hosting.</p>
+<p>If you create a GitHub account, you can share your personal webpage by adding the code to a repository.</p>
 <ul>
-<li>flex dashboards can be static or made interactive by using <code>runtime: shiny</code></li>
+<li><p>very simple way: create a new repository and upload the website code</p></li>
+<li><p>if you change your code you can re-upload the whole website, or explore how to update with Git</p></li>
 </ul>
-<p><a href="https://rmarkdown.rstudio.com/flexdashboard/index.html">flex dashboard guide</a></p>
-<p><a href="hhttps://pkgs.rstudio.com/flexdashboard/articles/layouts.html">layout guide</a></p>
-<p><a href="https://bookdown.org/yihui/rmarkdown/dashboards.html">dashboard chapter in markdown book</a></p>
-</div>
-<div id="ggplot" class="section level4">
-<h4>ggplot</h4>
-<p><a href="https://ggplot2.tidyverse.org/reference/">reference</a></p>
-<p><a href="http://r-statistics.co/R-Tutorial.html">tutorial from r-statistics</a></p>
-</div>
-<div id="plot.ly" class="section level4">
-<h4>plot.ly</h4>
+<p>I personally use GitHub desktop to manage my files and update repositories.</p>
 <ul>
-<li><p><code>plot.ly</code> creates interactive plots</p></li>
-<li><p>you can also wrap <code>ggplot</code> objects in <code>ggplotly</code> to make them interactive</p></li>
+<li><p>Ensure your GitHub account is linked and authorized</p></li>
+<li><p>If you have a project already created locally, add an existing repository, name it, and make it a GitHub repository. Then make sure to publish, and it should appear on your GitHub. If you later make changes, you will have to “push” from local to remote.</p></li>
 </ul>
-<p><a href="https://plot.ly/r">plot.ly guide</a></p>
-<p><a href="https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf?_ga=2.221695057.832877277.1554941189-624079522.1510715632">cheatsheet</a></p>
-<p><a href="https://plotly.com/ggplot2/getting-started/">ggplotly</a></p>
+<center>
+<p><img src="githubdesktop_1.png" /></p>
+<p><img src="githubdesktop_2.png" /></p>
+<img src="githubdesktop_3.png" />
+</center>
+<p>The repository may automatically be created as “GitHub pages” which creates a website, but if not, check repository settings and scroll down to GitHub pages at the bottom. You may need to enable pages, or troubleshoot.</p>
+<p>If you name the repository <code>username.github.io</code> then your website will be at: <code>https://username.github.io</code>. Otherwise it will be at: <code>https://username.github.io/repo_name</code></p>
+<p>more info on github pages <a href="https://pages.github.com">here</a></p>
+<p>more info on github desktop <a href="https://docs.github.com/en/desktop">here</a></p>
 </div>
-<div id="shiny-app" class="section level4">
-<h4>shiny app</h4>
-<ul>
-<li><p>you can make a shiny dashboard or app, which allows for more flexibility and interactivity</p></li>
-<li><p>you can run the app locally on your computer</p></li>
-<li><p>you can host your shiny dashboard or shiny app online</p>
-<ul>
-<li><p>R needs to be running in the background</p></li>
-<li><p>host for free at <a href="https://www.shinyapps.io/">shiny.io</a></p></li>
-</ul></li>
-</ul>
-<p><a href="https://rstudio.github.io/shinydashboard/get_started.html">shiny guide: getting started</a></p>
-<p><a href="https://rstudio.github.io/shinydashboard/structure.html#background-shiny-and-html">shiny guide: structure</a></p>
-<p><a href="http://shiny.rstudio.com/tutorial">shiny tutorial from RStudio</a></p>
-<p><a href="https://docs.rstudio.com/shinyapps.io/">another resource</a></p>
-</div>
-</div>
+<div id="hosting-on-shiny" class="section level1">
+<h1>Hosting on Shiny</h1>
+<p>If you make an interactive dashboard or app with widgets that you want to host online, you need to be running R in the background. One option is hosting on shinyapps.io.</p>
+<p>You can sign up for a free account, using email, or GitHub if you have one.</p>
+<p>To connect your RStudio, you need to configure the <code>rsconnect</code> package to use that account. Retrieve your token from the shinyapps.io dashboard by selecting the Tokens option in the menu at the top right of the shinyapps dashboard (under your avatar).</p>
+<p>In the R console, run the setAccountInfo function from the rsconnect package, passing in the token and secret from the Profile -&gt; Tokens page.</p>
+<p><code>rsconnect::setAccountInfo(name="&lt;ACCOUNT&gt;", token="&lt;TOKEN&gt;", secret="&lt;SECRET&gt;")</code></p>
+<p>Once you have configured your rsconnect installation, you can use it to upload applications to shinyapps.io.</p>
+<p>Click the “publish” icon, select your file and shinyapp account.</p>
+<p>(below is how it looks to update an app)</p>
+<p><img src="shiny.png" /></p>
+<p>more info about Shiny deployment <a href="https://docs.rstudio.com/shinyapps.io/getting-started.html#deploying-applications">here</a></p>
 </div>
 
 
