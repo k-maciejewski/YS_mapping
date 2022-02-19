@@ -2,4 +2,4 @@
 
 Simple mapping and dashboarding tutorial
 
-k-maciejewski.github.io/ys_mapping/
+see webpage [here](k-maciejewski.github.io/ys_mapping)
