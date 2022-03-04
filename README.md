@@ -12,9 +12,11 @@ You can download here: [<https://github.com/CSSEGISandData/COVID-19/tree/master/
 
 If you load the data in with your Rcode, you can update with the most recently updated data (updated daily)
 
-`us_covid_confirmed<-read.csv("[https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv]")
+```
+us_covid_confirmed<-read.csv("[https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv]")
 
-us_covid_deaths<-read.csv("[https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv]")`
+us_covid_deaths<-read.csv("[https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv]")
+```
 
 For this project, use whatever you prefer. The second method may take longer for your code to run (and re-run/ re-clean), however, I wouldn't suggest it for this project
 
